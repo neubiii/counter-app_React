@@ -1,7 +1,7 @@
 import React from "react";
 import "./counter.css";
 import Logs from "../logs/logs";
-
+ 
 class Counter extends React.Component {
   constructor() {
     super();
@@ -11,13 +11,14 @@ class Counter extends React.Component {
       decValue: 0,
       logs: [],
       showLogs: false,
+      showWarning: false
     };
   }
   handleCounter(sign) {
     const { counter, incValue, decValue, logs } = this.state;
     let oldValue = counter;
     let newValue = null;
-
+ 
     if (sign === "+") {
       newValue = counter + incValue;
       this.setState({
@@ -56,9 +57,14 @@ class Counter extends React.Component {
     // based on the id received we delete the log from the counter state
     this.setState({ logs: this.state.logs.filter((logs) => logs.id !== id) });
   }
-
+ 
+  toggleWarning = ()=>{
+    this.setState({ showWarning: !this.state.showWarning});
+  }
+ 
+ 
   render() {
-    const { counter, incValue, decValue, logs, showLogs } = this.state;
+    const { counter, incValue, decValue, logs, showLogs, showWarning } = this.state;
     return (
       <div className="main">
         <div>
@@ -122,12 +128,15 @@ class Counter extends React.Component {
             </button>
             {showLogs && (
               <div className="logs_container">
+                {showWarning &&(
                 <div className="warning_container">
-                  <p className="warning">click to delete</p>
+                  <p className="warning" data-testid="warning-message">click to delete</p>
                 </div>
+                )}
                 <Logs
                   logsData={logs}
                   deleteLogs={(id) => this.deleteLogs(id)}
+                  toggleWarning={this.toggleWarning}
                 />
               </div>
             )}
@@ -137,5 +146,6 @@ class Counter extends React.Component {
     );
   }
 }
-
+ 
 export default Counter;
+ 

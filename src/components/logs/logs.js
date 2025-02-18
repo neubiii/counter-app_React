@@ -1,7 +1,7 @@
 import "./logs.css";
 
 const Logs = (props) => {
-  const { logsData, deleteLogs } = props;
+  const { logsData, deleteLogs, toggleWarning } = props;
   return logsData.map((log) => {
     return (
       <div
@@ -9,6 +9,8 @@ const Logs = (props) => {
         data-testid="log_info"
         key={log.id}
         onClick={() => deleteLogs(log.id)}
+        onMouseEnter={()=> toggleWarning()}
+        onMouseLeave={()=> toggleWarning()}
       >
         <p>{log.value}</p>
       </div>
