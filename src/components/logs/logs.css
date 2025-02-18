@@ -1,3 +1,8 @@
-.log_info{
-    text-align: center;
+.log_info {
+  text-align: center;
+  border: 1px dotted grey;
+  box-shadow: -1px 2px 0.2em #211f1f;
+  cursor: pointer;
+  margin: 4px 0px;
+  padding: 0px 10px;
 }

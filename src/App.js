@@ -1,15 +1,8 @@
-
-import './App.css';
-import Counter from './components/counter/counter';
+import "./App.css";
+import Counter from "./components/counter/counter";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">        
-        <Counter/>
-      </header>
-    </div>
-  );
+  return <Counter />;
 }
 
 export default App;

@@ -13,79 +13,59 @@ class Counter extends React.Component {
       showLogs: false,
     };
   }
-
   handleCounter(sign) {
-    const { counter, incValue, decValue, logs } = this.state; //Destructuring
+    const { counter, incValue, decValue, logs } = this.state;
     let oldValue = counter;
     let newValue = null;
 
     if (sign === "+") {
       newValue = counter + incValue;
-      this.setState({ counter: newValue, incValue: 0 });
+      this.setState({
+        counter: counter + incValue,
+        incValue: 0,
+      });
     }
-    if (sign === "-" && counter > decValue) {
+    if (sign === "-") {
       newValue = counter - decValue;
-      this.setState({ counter: newValue, decValue: 0 });
+      this.setState({
+        counter: counter - decValue,
+        decValue: 0,
+      });
     }
-    if (sign === "") this.setState({ counter: 0 });
-
     if (incValue > 0 || decValue > 0) {
       //Generate a Log
-      let newLog = `Previous Value = ${oldValue}, Value ${
-        sign === "+" ? "Added" : "Subtracted"
-      } = ${sign === "+" ? incValue : decValue}, New Value = ${newValue}`;
-      console.log(newLog);
+      let newLog = {
+        id: Math.random(),
+        value: `Previous Value = ${oldValue}, Value ${
+          sign === "+" ? "Added" : "Subtracted"
+        } = ${sign === "+" ? incValue : decValue}, New Value = ${newValue}`,
+      };
       this.setState({ logs: [...logs, newLog] });
     }
   }
-
   handleOperation(event) {
-    // console.log(event.target.value);
     if (event.target.id === "value_inc") {
-      //update the state of incValue
-      this.setState({ incValue: Number(event.target.value) }); //+(event.target.value) is also correct
+      // update the incValue state
+      this.setState({ incValue: +event.target.value });
     } else {
-      //update the state of decValue
-      this.setState({ decValue: Number(event.target.value) });
+      // update the decValue state
+      this.setState({ decValue: +event.target.value });
     }
   }
-
-  // handleOptionChange = (event) => {
-  //     this.setState({ option: event.target.value });
-  // };
-
-  // handleNumberChange = (event) => {
-  //     this.setState({ number: Number(event.target.value) });
-  // };
-
-  // buttonAction = () => {
-  //     const { counter, option, number } = this.state;
-
-  //     if (!number) {
-  //         alert("Please enter a number!");
-  //         return;
-  //     }
-
-  //     if (option === "add") {
-  //         this.setState({counter: counter + number});
-  //     } else if (option === "subtract") {
-  //         if (counter < number) {
-  //             this.setState({counter: 0});
-  //         }
-  //         else
-  //             this.setState({counter: counter - number});
-  //     }
-  // };
+  deleteLogs(id) {
+    // based on the id received we delete the log from the counter state
+    this.setState({ logs: this.state.logs.filter((logs) => logs.id !== id) });
+  }
 
   render() {
     const { counter, incValue, decValue, logs, showLogs } = this.state;
     return (
       <div className="main">
         <div>
-          <h1>Counter Component</h1>
+          <h1>Counter</h1>
         </div>
         <div>
-          <h3>Value of Counter : {counter}</h3>
+          <h3 data-testid="counter-value">Value Of Counter : {counter}</h3>
         </div>
         <div className="buttons">
           <div className="action_section">
@@ -95,11 +75,13 @@ class Counter extends React.Component {
                 id="value_inc"
                 placeholder="0"
                 value={incValue}
+                data-testid="value_inc"
                 onChange={(event) => this.handleOperation(event)}
-              />
+              ></input>
             </form>
             <button
               className="button button_inc"
+              data-testid="button_inc"
               onClick={() => this.handleCounter("+")}
             >
               Increase
@@ -112,43 +94,41 @@ class Counter extends React.Component {
                 id="value_dec"
                 placeholder="0"
                 value={decValue}
+                data-testid="value_dec"
                 onChange={(event) => this.handleOperation(event)}
-              />
+              ></input>
             </form>
             <button
               className="button button_dec"
               onClick={() => this.handleCounter("-")}
+              data-testid="button_dec"
             >
               Decrease
             </button>
           </div>
-
-          {/* <div className="action_section">
-                        <button className="button button_dec"onClick={() => this.handleCounter()}>Reset</button>
-                    </div> */}
-          {/* <div className="action_section">
-                        <input type= "number" className="input" value={this.state.number} onChange={this.handleNumberChange}/>
-                        <select name="option" id="option" value={this.state.option} onChange={this.handleOptionChange}>
-                            <option value="add">Add</option>
-                            <option value="subtract">Subtract</option>
-                        </select>
-                        <button className="button button_inc" onClick = {this.buttonAction}>
-                            {this.state.option === "add" ? "add" : "subtract"} {this.state.number}</button>
-                    </div> */}
         </div>
-        {/*  conditional rendering*/}
         {logs.length >= 1 && (
-          <div className="logs">
+          <div className="logs" data-testid="logs-section">
             <button
+              data-testid="toggle-logs"
               className="button button_info"
               onClick={() => this.setState({ showLogs: !showLogs })}
-              style = {{backgroundColor: showLogs ? "yellow" : "blue", color: showLogs ? "black" : "white"}}
+              style={{
+                backgroundColor: showLogs ? "black" : "#e7e7e7",
+                color: showLogs ? "#e7e7e7" : "black",
+              }}
             >
               {showLogs && logs.length >= 1 ? "Hide" : "Show"} Logs
             </button>
             {showLogs && (
               <div className="logs_container">
-                <Logs />
+                <div className="warning_container">
+                  <p className="warning">click to delete</p>
+                </div>
+                <Logs
+                  logsData={logs}
+                  deleteLogs={(id) => this.deleteLogs(id)}
+                />
               </div>
             )}
           </div>
